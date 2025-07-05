@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HelmetMist Display</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background: black; color: white; font-family: Arial, sans-serif; }
+    #container { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+    #statusText { font-size: 2em; margin-bottom: 20px; }
+    #imageDisplay, #videoDisplay, #adDisplay { display: none; width: 100%; height: 100%; }
+    #videoDisplay video { width: 100%; height: 100%; object-fit: cover; }
+    #adDisplay img { width: 100%; height: 100%; object-fit: cover; }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="statusText">Carregando...</div>
+    <div id="adDisplay"><img src="anuncio1.jpg" id="adImage" /></div>
+    <div id="videoDisplay">
+      <video id="cycleVideo" src="ciclo.mp4" muted autoplay></video>
+    </div>
+    <div id="imageDisplay"><img src="finalizado.png" /></div>
+  </div>
+
+  <script>
+    const statusText = document.getElementById('statusText');
+    const adDisplay = document.getElementById('adDisplay');
+    const videoDisplay = document.getElementById('videoDisplay');
+    const imageDisplay = document.getElementById('imageDisplay');
+    const cycleVideo = document.getElementById('cycleVideo');
+
+    const sequence = [
+      { status: "Exibindo Anúncio", element: adDisplay, duration: 10000 },
+      { status: "Iniciando desinfecção...", element: null, duration: 3000 },
+      { status: "Desinfecção em andamento", element: videoDisplay, duration: 10000 },
+      { status: "Capacete pronto!", element: imageDisplay, duration: 5000 }
+    ];
+
+    let current = 0;
+
+    function runSequence() {
+      const step = sequence[current];
+      statusText.textContent = step.status;
+
+      adDisplay.style.display = 'none';
+      videoDisplay.style.display = 'none';
+      imageDisplay.style.display = 'none';
+
+      if (step.element) step.element.style.display = 'block';
+
+      if (step.status.includes('Desinfecção')) {
+        cycleVideo.currentTime = 0;
+        cycleVideo.play();
+      }
+
+      current = (current + 1) % sequence.length;
+      setTimeout(runSequence, step.duration);
+    }
+
+    window.onload = runSequence;
+  </script>
+</body>
+</html>
